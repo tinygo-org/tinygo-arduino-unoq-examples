@@ -101,12 +101,53 @@ shutdown command invoked
 
 ## echo
 
+![echo](./images/echo.png)
+
 Type into the console, and the Arduino UNO Q will echo back what you typed.
 
 First flash the board with your TinyGo program:
 
 ```
-tinygo flash -target arduino-uno-q -size short ./echo
+$ tinygo flash -target arduino-uno-q -size short ./echo
+   code    data     bss |   flash     ram
+   6668    1484    4320 |    8152    5804
+/tmp/tinygo1141501919/main.hex: 1 file pushed, 0 skipped. 181.7 MB/s (22452 bytes in 0.000s)
+Open On-Chip Debugger 0.12.0+dev-ge6a2c12f4 (2025-05-22-15:51)
+Licensed under GNU GPL v2
+For bug reports, read
+        http://openocd.org/doc/doxygen/bugs.html
+adapter speed: 1000 kHz
+srst_only separate srst_gates_jtag srst_push_pull connect_deassert_srst
+clock_config
+Info : Linux GPIOD JTAG/SWD bitbang driver (libgpiod v2)
+Info : Note: The adapter "linuxgpiod" doesn't support configurable speed
+Info : SWD DPIDR 0x0be12477
+Info : [stm32u5.ap0] Examination succeed
+Info : [stm32u5.cpu] Cortex-M33 r0p4 processor detected
+Info : [stm32u5.cpu] target has 8 breakpoints, 4 watchpoints
+Info : [stm32u5.cpu] Examination succeed
+Info : [stm32u5.ap0] gdb port disabled
+Info : [stm32u5.cpu] starting gdb server on 3333
+Info : Listening on port 3333 for gdb connections
+CPU in Non-Secure state
+[stm32u5.cpu] halted due to breakpoint, current mode: Thread 
+xPSR: 0xf9000000 pc: 0x08002f6c msp: 0x20001000
+Error: Translation from khz to adapter speed not implemented
+Error: [stm32u5.cpu] Execution of event reset-init failed:
+
+** Programming Started **
+Info : device idcode = 0x30076482 (STM32U57/U58xx - Rev U : 0x3007)
+Info : TZEN = 0 : TrustZone disabled by option bytes
+Info : RDP level 0 (0xAA)
+Info : flash size = 2048 KiB
+Info : flash mode : dual-bank
+Info : Padding image section 0 at 0x08001fd8 with 8 bytes (bank write end alignment)
+Warn : Adding extra erase range, 0x08001fe0 .. 0x08001fff
+** Programming Finished **
+** Verify Started **
+** Verified OK **
+** Resetting Target **
+shutdown command invoked
 ```
 
 Then connect to the board using your terminal.
@@ -187,7 +228,7 @@ https://developer.android.com/tools/releases/platform-tools
 To start a new session, plug the board into your computer using a USB-C cable, then run this command:
 
 ```
-./tools/setup_arduino_q.sh
+./tools/setup_arduino.sh
 ```
 
 You must run that command once after plugging in your Arduino after being powered down.
@@ -201,7 +242,7 @@ If you want to see the serial output from the microcontroller, you must run the 
 To start a new session, plug the board into your computer using a USB-C cable, then run this command:
 
 ```
-.\tools\setup_arduino_q.ps1
+.\tools\setup_arduino.ps1
 ```
 
 You must run that command once after plugging in your Arduino after being powered down.
