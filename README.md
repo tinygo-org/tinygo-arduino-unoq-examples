@@ -339,6 +339,79 @@ arduino@tinygoq:~$ ./mqttclient
 2026/04/15 10:12:25 published: {"analog_a0":25568,"time":"2026-04-15T10:12:25Z"}
 ```
 
+## webserver
+
+![webserver](./images/webserver.png)
+
+Run a TinyGo program on the Arduino UNO Q onboard microcontroller to obtain sensor readings, and run a Go program on the Arduino UNO Q Linux machine to serve the data over HTTP.
+
+You must setup your Arduino UNO Q so that it has a network connection for this example to work. See https://docs.arduino.cc/tutorials/uno-q/user-manual for more info.
+
+Connect an analog sensor such as a rotary angle sensor to the Arduino UNO Q `A0` pin for this example to send a real reading.
+
+### Flash the microcontroller
+
+If you have not done it already since you have last restarted your Arduino UNO Q board, run the setup script:
+
+macOS/Linux:
+
+```
+./tools/setup_arduino.sh
+```
+
+Windows:
+
+```
+.\tools\setup_arduino.ps1
+```
+
+Now flash the "sensor" code:
+
+```
+$ tinygo flash -target arduino-uno-q -size short ./webserver/sensor
+```
+
+### Build/deploy the Linux server
+
+First build it:
+
+```
+mkdir -p build
+GOOS=linux GOARCH=arm64 go build -o ./build/webserver ./webserver/server
+```
+
+Now transfer it to the Arduino UNO Q:
+
+```
+adb push ./build/webserver /home/arduino/webserver
+```
+
+Also push the web page files:
+
+```
+adb shell mkdir -p /home/arduino/www
+adb push ./webserver/server/index.html /home/arduino/www/index.html
+adb push ./webserver/server/mincss.min.css /home/arduino/www/mincss.min.css
+```
+
+And connect to the Arduino UNO Q to run it using the `adb shell` command, and then run the `webserver` program:
+
+```
+$ adb shell
+arduino@tinygoq:/$ cd /home/arduino/
+arduino@tinygoq:~$ ./webserver
+2026/04/15 10:12:00 listening on :8080
+```
+
+You can then access the sensor reading from a browser or curl at `http://<arduino-ip>:8080/sensor`:
+
+```
+$ curl http://<arduino-ip>:8080/sensor
+{"analog_a0":39200,"time":"2026-04-15T10:12:00Z"}
+```
+
+You can also open `http://<arduino-ip>:8080/` in a browser to see a web page that automatically refreshes the sensor reading every second.
+
 ## Setup
 
 ### adb

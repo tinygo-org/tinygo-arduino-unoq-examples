@@ -1,0 +1,62 @@
+<html>
+<head>
+    <title>TinyGo HTTP Server</title>
+    <link href="mincss.min.css" rel="stylesheet" type="text/css">
+    <style>
+        .hero {
+            background: #eee;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 1em;
+        }
+
+        .hero h1 {
+            margin-top: 0;
+            margin-bottom: 0.3em;
+        }
+
+        #sensor-value {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        #sensor-time {
+            color: #666;
+            font-size: 0.9em;
+        }
+	</style>
+    <script language="javascript" type="text/javascript">
+        function fetchSensor() {
+            fetch("/sensor")
+                .then(response => response.json())
+                .then(json => {
+                    document.getElementById('sensor-value').textContent = json.analog_a0;
+                    document.getElementById('sensor-time').textContent = json.time;
+                })
+                .catch(err => {
+                    document.getElementById('sensor-value').textContent = "error";
+                    document.getElementById('sensor-time').textContent = err.message;
+                });
+        }
+        setInterval(fetchSensor, 1000);
+        window.onload = fetchSensor;
+    </script>
+</head>
+<body>
+    <nav class="nav" tabindex="-1" onclick="this.focus()">
+        <div class="container">
+            <a class="pagename current" href="#">TinyGo HTTP Server</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="hero">
+            <h1>Sensor Reading</h1>
+            <p>Analog pin A0 value (updated every second):</p>
+            <p id="sensor-value">waiting for connection...</p>
+            <p id="sensor-time"></p>
+        </div>
+    </div>
+
+</body>
+</html>
