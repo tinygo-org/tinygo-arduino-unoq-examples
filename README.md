@@ -2,6 +2,8 @@
 
 [TinyGo](https://tinygo.org/) demos and examples on [Arduino UNO Q](https://docs.arduino.cc/hardware/uno-q/) board.
 
+You must install `adb` in addition to TinyGo in order to run these examples. See the [`adb` setup info](#adb) below.
+
 ## blinky
 
 ![blinky](./images/blinky.gif)
@@ -105,7 +107,21 @@ shutdown command invoked
 
 Type into the console, and the Arduino UNO Q will echo back what you typed.
 
-First flash the board with your TinyGo program:
+If you have not done it already since you have last restarted your Arduino UNO Q board, run the setup script:
+
+macOS/Linux:
+
+```
+./tools/setup_arduino.sh
+```
+
+Windows:
+
+```
+.\tools\setup_arduino.ps1
+```
+
+Next flash the board with your TinyGo program:
 
 ```
 $ tinygo flash -target arduino-uno-q -size short ./echo
@@ -150,7 +166,7 @@ Warn : Adding extra erase range, 0x08001fe0 .. 0x08001fff
 shutdown command invoked
 ```
 
-Then connect to the board using your terminal.
+Now connect to the board using your terminal.
 
 macOS/Linux:
 
@@ -165,6 +181,55 @@ Windows:
 ```
 
 To exit the terminal, type "CTRL-A" followed by "K". You will be prompted "Really kill this window [y/n]" then enter "y".
+
+## life
+
+![life](./images/life.gif)
+
+Use the Arduino UNO Q onboard LED matrix to show playing Conway's Game of Life.
+
+```
+$ tinygo flash -target arduino-uno-q -size short ./life/
+   code    data     bss |   flash     ram
+   9308    1452    4352 |   10760    5804
+/tmp/tinygo2703216608/main.hex: 1 file pushed, 0 skipped. 214.0 MB/s (29624 bytes in 0.000s)
+Open On-Chip Debugger 0.12.0+dev-ge6a2c12f4 (2025-05-22-15:51)
+Licensed under GNU GPL v2
+For bug reports, read
+        http://openocd.org/doc/doxygen/bugs.html
+adapter speed: 1000 kHz
+srst_only separate srst_gates_jtag srst_push_pull connect_deassert_srst
+clock_config
+Info : Linux GPIOD JTAG/SWD bitbang driver (libgpiod v2)
+Info : Note: The adapter "linuxgpiod" doesn't support configurable speed
+Info : SWD DPIDR 0x0be12477
+Info : [stm32u5.ap0] Examination succeed
+Info : [stm32u5.cpu] Cortex-M33 r0p4 processor detected
+Info : [stm32u5.cpu] target has 8 breakpoints, 4 watchpoints
+Info : [stm32u5.cpu] Examination succeed
+Info : [stm32u5.ap0] gdb port disabled
+Info : [stm32u5.cpu] starting gdb server on 3333
+Info : Listening on port 3333 for gdb connections
+CPU in Non-Secure state
+[stm32u5.cpu] halted due to breakpoint, current mode: Thread 
+xPSR: 0xf9000000 pc: 0x08001258 msp: 0x20001000
+Error: Translation from khz to adapter speed not implemented
+Error: [stm32u5.cpu] Execution of event reset-init failed:
+
+** Programming Started **
+Info : device idcode = 0x30076482 (STM32U57/U58xx - Rev U : 0x3007)
+Info : TZEN = 0 : TrustZone disabled by option bytes
+Info : RDP level 0 (0xAA)
+Info : flash size = 2048 KiB
+Info : flash mode : dual-bank
+Info : Padding image section 0 at 0x08002a08 with 8 bytes (bank write end alignment)
+Warn : Adding extra erase range, 0x08002a10 .. 0x08003fff
+** Programming Finished **
+** Verify Started **
+** Verified OK **
+** Resetting Target **
+shutdown command invoked
+```
 
 ## matrix
 
