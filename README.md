@@ -279,6 +279,66 @@ Warn : Adding extra erase range, 0x080076d0 .. 0x08007fff
 shutdown command invoked
 ```
 
+## mqtt
+
+Run a TinyGo program on the Arduino UNO Q onboard microcontroller to obtain sensor readings, and run a Go program on the Arduino UNO Q Linux machine to send data using the MQTT machine to machine messaging protocol.
+
+You must setup your Arduino UNO Q so that it has internet connection for this example to work. See https://docs.arduino.cc/tutorials/uno-q/user-manual for more info.
+
+Connect an analog sensor such as a rotary angle sensor to the Arduino UNO Q `A0` pin for this example to send a real reading.
+
+### Flash the microcontroller
+
+If you have not done it already since you have last restarted your Arduino UNO Q board, run the setup script:
+
+macOS/Linux:
+
+```
+./tools/setup_arduino.sh
+```
+
+Windows:
+
+```
+.\tools\setup_arduino.ps1
+```
+
+Now flash the "sensor" code:
+
+```
+$ tinygo flash -target arduino-uno-q -size short ./mqtt/sensor
+```
+
+### Build/deploy the Linux client
+
+First build it:
+
+```
+mkdir -p build
+GOOS=linux GOARCH=arm64 go build -o ./build/mqttclient ./mqtt/client
+```
+
+Now transfer it to the Arduino UNO Q:
+
+```
+adb push ./build/mqttclient /home/arduino/mqttclient
+```
+
+And connect to the Arduino UNO Q to run it using the `adb shell` command, and then run the `mqttclient` program:
+
+```
+$ adb shell
+arduino@tinygoq:/$ cd /home/arduino/
+arduino@tinygoq:~$ ./mqttclient 
+2026/04/15 10:12:00 connected to MQTT broker at broker.hivemq.com:1883
+2026/04/15 10:12:00 published: {"analog_a0":39200,"time":"2026-04-15T10:12:00Z"}
+2026/04/15 10:12:05 published: {"analog_a0":39184,"time":"2026-04-15T10:12:05Z"}
+2026/04/15 10:12:10 published: {"analog_a0":65520,"time":"2026-04-15T10:12:10Z"}
+2026/04/15 10:12:15 published: {"analog_a0":64,"time":"2026-04-15T10:12:15Z"}
+2026/04/15 10:12:20 published: {"analog_a0":0,"time":"2026-04-15T10:12:20Z"}
+2026/04/15 10:12:25 published: {"analog_a0":25568,"time":"2026-04-15T10:12:25Z"}
+```
+
 ## Setup
 
 ### adb
